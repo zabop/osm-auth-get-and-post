@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 
 const auth = window.osmAuth.osmAuth({
-  client_id: "OzEEGgyYM2RSU4sZtucfdT9URz3IM17MFH8i3fJ8aa0",
-  scope: "read_prefs write_api",
+  client_id: "cJmOITzl1zLD8-XwfNTMXmtOMVJSXppey8Dg0Y2UrAs",
+  scope: "read_prefs",
   redirect_uri: `${window.location.origin}/osm-auth-get-and-post/land.html`,
   singlepage: false,
 });
@@ -11,6 +11,7 @@ export default function App() {
   const [user, setUser] = useState(null);
   const [error, setError] = useState("");
   const [getParam, setGetParam] = useState("");
+  const [postBody, setPostBody] = useState("");
   const [resp, setResp] = useState("");
 
   function fetchUserDetails() {
@@ -65,7 +66,7 @@ export default function App() {
     auth.xhr(
       {
         method: "GET",
-        path: `http://0.0.0.0:8080/send_get?msg=${getParam}`,
+        path: `http://0.0.0.0:8080/get?msg=${getParam}`,
         prefix: false,
         options: {
           headers: {
@@ -74,6 +75,31 @@ export default function App() {
         },
       },
       (err, res) => {
+        setResp(JSON.parse(res)["message"]);
+      }
+    );
+  }
+
+  function sendPOST() {
+    if (!auth.authenticated()) {
+      setError("You must be logged in to send.");
+      return;
+    }
+    auth.xhr(
+      {
+        method: "POST",
+        path: `http://0.0.0.0:8080/post`,
+        prefix: false,
+        options: {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: { input: "foo" },
+        },
+      },
+      (err, res) => {
+        console.log("err", err);
         setResp(JSON.parse(res)["message"]);
       }
     );
@@ -88,16 +114,24 @@ export default function App() {
       {user && <> Authenticated: {user.name}</>}
 
       <div>
-        <label htmlFor="send_get">
-          Send a string via a GET request and query parameters:
-        </label>
+        <label htmlFor="get">Send a string via GET as a query param:</label>
         <input
-          id="send_get"
+          id="get"
           type="text"
           value={getParam}
           onChange={(e) => setGetParam(e.target.value)}
         />
         <button onClick={sendGET}>Send</button>
+      </div>
+      <div>
+        <label htmlFor="post">Send a string via POST in request body:</label>
+        <input
+          id="post"
+          type="text"
+          value={postBody}
+          onChange={(e) => setPostBody(e.target.value)}
+        />
+        <button onClick={sendPOST}>Send</button>
       </div>
 
       <div>{resp}</div>
