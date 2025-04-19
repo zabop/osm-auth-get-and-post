@@ -3,6 +3,7 @@ from fastapi import FastAPI, Request, Query
 from requests_oauthlib import OAuth2Session
 from fastapi.responses import JSONResponse
 import xml.etree.ElementTree as ET
+from pydantic import BaseModel
 
 app = FastAPI()
 
@@ -12,30 +13,49 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["GET"],
+    allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
 
 
-@app.get("/send_get")
-async def mark_nodes_as(request: Request, msg: str = Query(...)):
+class PostBody(BaseModel):
+    msg: str
 
-    auth_header = request.headers.get("Authorization")
+
+def auth(auth_header):
+
     token = {
         "access_token": auth_header.replace("Bearer ", ""),
         "token_type": "Bearer",
-        "scope": ["write_api", "read_prefs"],
+        "scope": ["read_prefs"],
     }
 
+    resp = OAuth2Session(token=token).get(
+        "https://api.openstreetmap.org/api/0.6/user/details"
+    )
+
+    user = ET.fromstring(resp.content).find("user").attrib["display_name"]
+
+    return user
+
+
+@app.get("/get")
+async def get(request: Request, msg: str = Query(...)):
+
     try:
-
-        oauth_session = OAuth2Session(token=token)
-        resp = oauth_session.get("https://api.openstreetmap.org/api/0.6/user/details")
-
-        root = ET.fromstring(resp.content)
-        user = root.find("user").attrib["display_name"]
-
+        user = auth(request.headers.get("Authorization"))
         resp = f"Hi {user}, your message via GET was: {msg}"
+    except Exception as e:
+        resp = e
+
+    return JSONResponse({"message": resp})
+
+
+@app.post("/post")
+async def post(postBody: PostBody):
+
+    try:
+        resp = f"Hi user, your message via POST was: {postBody.msg}"
     except Exception as e:
         resp = e
 
