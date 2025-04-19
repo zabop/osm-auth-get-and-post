@@ -13,6 +13,7 @@ export default function App() {
   const [getParam, setGetParam] = useState("");
   const [postContent, setPostContent] = useState("");
   const [resp, setResp] = useState("");
+  const [loading, setLoading] = useState(false);
 
   function fetchUserDetails() {
     auth.xhr({ method: "GET", path: "/api/0.6/user/details" }, (err, res) => {
@@ -63,10 +64,12 @@ export default function App() {
       return;
     }
 
+    setLoading(true);
+    setResp(""); // clear previous resp
+
     auth.xhr(
       {
         method: "GET",
-        //path: `http://0.0.0.0:8080/get?msg=${getParam}`,
         path: `https://backend-twilight-brook-3157.fly.dev/get?msg=${getParam}`,
         prefix: false,
         options: {
@@ -76,6 +79,7 @@ export default function App() {
         },
       },
       (err, res) => {
+        setLoading(false);
         setResp(JSON.parse(res)["message"]);
       }
     );
@@ -87,10 +91,12 @@ export default function App() {
       return;
     }
 
+    setLoading(true);
+    setResp(""); // clear previous resp
+
     auth.xhr(
       {
         method: "POST",
-        // path: `http://0.0.0.0:8080/post/`,
         path: `https://backend-twilight-brook-3157.fly.dev/post/`,
         prefix: false,
         content: JSON.stringify({ msg: postContent }),
@@ -100,7 +106,7 @@ export default function App() {
         },
       },
       (err, res) => {
-        console.log("err", err);
+        setLoading(false);
         setResp(JSON.parse(res)["message"]);
       }
     );
@@ -135,7 +141,15 @@ export default function App() {
         <button onClick={sendPOST}>Send</button>
       </div>
 
-      <div>{resp}</div>
+      <div>
+        {loading ? (
+          <div style={{ marginTop: "1em" }}>
+            <span>Loading, wait...</span>
+          </div>
+        ) : (
+          resp && <div style={{ marginTop: "1em" }}>{resp}</div>
+        )}
+      </div>
     </>
   );
 }
