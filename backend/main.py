@@ -52,10 +52,11 @@ async def get(request: Request, msg: str = Query(...)):
 
 
 @app.post("/post/")
-async def post(postBody: PostBody):
+async def post(request: Request, postBody: PostBody):
 
     try:
-        resp = f"Hi user, your message via POST was: {postBody.msg}"
+        user = auth(request.headers.get("Authorization"))
+        resp = f"Hi {user}, your message via POST was: {postBody.msg}"
     except Exception as e:
         resp = e
 
