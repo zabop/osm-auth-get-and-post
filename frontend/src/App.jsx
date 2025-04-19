@@ -95,7 +95,7 @@ export default function App() {
             Accept: "application/json",
             "Content-Type": "application/json",
           },
-          body: { input: "foo" },
+          body: { msg: "foo" },
         },
       },
       (err, res) => {
