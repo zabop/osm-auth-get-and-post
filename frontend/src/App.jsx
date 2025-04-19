@@ -90,7 +90,7 @@ export default function App() {
       {
         method: "POST",
         // path: `http://0.0.0.0:8080/post`,
-        path: `https://backend-twilight-brook-3157.fly.dev/post`,
+        path: `https://backend-twilight-brook-3157.fly.dev/post/`,
         prefix: false,
         options: {
           headers: {
