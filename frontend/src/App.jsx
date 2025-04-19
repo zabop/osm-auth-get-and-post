@@ -11,7 +11,7 @@ export default function App() {
   const [user, setUser] = useState(null);
   const [error, setError] = useState("");
   const [getParam, setGetParam] = useState("");
-  const [postBody, setPostBody] = useState("");
+  const [postContent, setPostContent] = useState("");
   const [resp, setResp] = useState("");
 
   function fetchUserDetails() {
@@ -97,7 +97,7 @@ export default function App() {
             Accept: "application/json",
             "Content-Type": "application/json",
           },
-          body: { msg: "foo" },
+          body: { msg: postContent },
         },
       },
       (err, res) => {
@@ -130,8 +130,8 @@ export default function App() {
         <input
           id="post"
           type="text"
-          value={postBody}
-          onChange={(e) => setPostBody(e.target.value)}
+          value={postContent}
+          onChange={(e) => setPostContent(e.target.value)}
         />
         <button onClick={sendPOST}>Send</button>
       </div>
