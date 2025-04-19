@@ -86,18 +86,24 @@ export default function App() {
       setError("You must be logged in to send.");
       return;
     }
+
+    console.log(
+      "content we want to send in POST body:",
+      JSON.stringify({ msg: postContent })
+    );
+
     auth.xhr(
       {
         method: "POST",
         // path: `http://0.0.0.0:8080/post/`,
         path: `https://backend-twilight-brook-3157.fly.dev/post/`,
         prefix: false,
+        content: JSON.stringify({ msg: postContent }),
         options: {
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ msg: postContent }),
         },
       },
       (err, res) => {
