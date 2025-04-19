@@ -66,7 +66,8 @@ export default function App() {
     auth.xhr(
       {
         method: "GET",
-        path: `http://0.0.0.0:8080/get?msg=${getParam}`,
+        //path: `http://0.0.0.0:8080/get?msg=${getParam}`,
+        path: `https://backend-twilight-brook-3157.fly.dev/get?msg=${getParam}`,
         prefix: false,
         options: {
           headers: {
@@ -88,7 +89,8 @@ export default function App() {
     auth.xhr(
       {
         method: "POST",
-        path: `http://0.0.0.0:8080/post`,
+        // path: `http://0.0.0.0:8080/post`,
+        path: `https://backend-twilight-brook-3157.fly.dev/post`,
         prefix: false,
         options: {
           headers: {
