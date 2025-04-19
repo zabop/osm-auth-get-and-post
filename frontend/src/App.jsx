@@ -99,11 +99,9 @@ export default function App() {
         path: `https://backend-twilight-brook-3157.fly.dev/post/`,
         prefix: false,
         content: JSON.stringify({ msg: postContent }),
-        options: {
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
         },
       },
       (err, res) => {
