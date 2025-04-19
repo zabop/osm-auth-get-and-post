@@ -87,11 +87,6 @@ export default function App() {
       return;
     }
 
-    console.log(
-      "content we want to send in POST body:",
-      JSON.stringify({ msg: postContent })
-    );
-
     auth.xhr(
       {
         method: "POST",
