@@ -51,7 +51,7 @@ async def get(request: Request, msg: str = Query(...)):
     return JSONResponse({"message": resp})
 
 
-@app.post("/post")
+@app.post("/post/")
 async def post(postBody: PostBody):
 
     try:
